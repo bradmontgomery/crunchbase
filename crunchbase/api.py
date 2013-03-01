@@ -12,3 +12,55 @@ class CrunchBase(object):
         if params:
             self.params.update(params)
         return self.endpoint(path, params=self.params)
+
+    # ------------------------------------------------------------------------
+    #
+    # Entities, Search, Lists, all have the same .js extension, but the
+    # Permalink & TechCrunchPost Entities do not.
+    #
+    # :(
+    #
+    # ------------------------------------------------------------------------
+
+    def _toggle_endpoint_extension(self):
+        # ugly hack
+        if self.endpoint.extension:
+            self.endpoint.extension = ""
+        else:
+            self.endpoint.extension = ".js"
+
+    def permalink(self, path, params):
+        """Query for an Entity's permalink.
+
+        Examples:
+
+            cb = CrunchBase()
+            cb.permalink('companies', {'name': 'Google'})
+
+        Results in a request to:
+
+            /companies/permalink?name=Google
+
+        """
+        self._toggle_endpoint_extension()
+        result = self.__call__(path + ".permalink", params)
+        self._toggle_endpoint_extension()
+        return result
+
+    def posts(self, path, params):
+        """Query for TechCrunch Posts about an Entity.
+
+        Examples:
+
+            cb = CrunchBae()
+            cb.posts('financial-organizations', {'name': 'Sequoia Capital'})
+
+        Results in a request to:
+
+            /financial-organizations/posts?name=Sequoia%20Capital
+
+        """
+        self._toggle_endpoint_extension()
+        result = self.__call__(path + ".posts", params)
+        self._toggle_endpoint_extension()
+        return result
