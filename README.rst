@@ -8,7 +8,10 @@ Disclaimer
 
 This project is a complete rewrite of the original, and it breaks backward
 compatibility. Please report any issues at
-`bradmontgomery/crunchbase <https://github.com/bradmontgomery/crunchbase/issues>`_
+`bradmontgomery/crunchbase <https://github.com/bradmontgomery/crunchbase/issues>`_.
+
+Any feedback on this work is greatly appreciated. Feel free to open an issue
+to critique and/or make suggestions.
 
 
 Dependencies
@@ -23,7 +26,7 @@ This Library requires the following:
 API Documentation
 -----------------
 
-The CrunchBase API docs are available at `http://developer.crunchbase.com/docs`_.
+The CrunchBase API docs are available at `<http://developer.crunchbase.com/docs>`_.
 Please refer to those docs in order to understand the API.
 
 
@@ -102,6 +105,7 @@ Retrieve the permalink for a product::
     >>> data = cb.permalink('products', {'name': 'iPhone'})
 
 Retrieve the permalink for a Financial Organization::
+
     >>> data = cb.permalink(
             'financial-organizations':
             {'name': 'Sequoia Capital'}
