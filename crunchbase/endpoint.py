@@ -40,25 +40,34 @@ class EndpointUnavailable(Exception):
 class Endpoint(object):
     """A generic api endpoint."""
 
-    def __init__(self, url, extension=''):
+    def __init__(self, url, extension='', cache_paths=[]):
         """Sets the API's base URL and creates a cache for results.
 
         If the api requires an extension (such as .js or .json), that can be
         specified with ``extension``. This will be appended to all api URI's.
 
+        By default, a call to a path will result in another HTTP Request. If
+        you don't want this, you can specify a list of paths in `cache_paths`.
+        For example, if you want to cache results from::
+
+            httpbin.api('user-agent')
+
+        You could create the endpoint with the following::
+
+            class HttpBin(object):
+                api = Endpoint(
+                    url='http://httpbin.org',
+                    cache_paths=['user-agent']
+                )
+
         """
         self.url = url + '/' if not url.endswith('/') else url
         self.cache = {}
         self.extension = extension
+        self.cache_paths = cache_paths
 
     def __set__(self, obj, val):
         raise AttributeError("Endpoints are Read-Only")
-
-    def _cache_key(self, path, params=None):
-        """Create the key used in the ``cache`` dict."""
-        if params is not None:
-            path += '.'.join(params.keys())
-        return path
 
     def _build_uri(self, path):
         """Build the uri for the endpoint."""
@@ -82,12 +91,11 @@ class Endpoint(object):
             e.g. {'key':'secret'} -> ?key=secret
 
         """
-        cache_key = self._cache_key(path, params)
-
-        if cache_key in self.cache:
+        if path in self.cache_paths and path in self.cache:
             return self.cache[path]
         else:
             uri = self._build_uri(path)
             result = self._request(uri, params=params)
-            self.cache[cache_key] = result
+            if path in self.cache_paths:
+                self.cache[path] = result
             return result
