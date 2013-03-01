@@ -126,3 +126,11 @@ See how often "Sequoia Captial" gets written about::
 See TechCrunch posts about "Ron Conway"::
 
     >>> data = cb.posts('people', {'first_name': 'Ron', 'last_name': 'Conway'})
+
+
+License
+-------
+
+This code was originally licensed under the WTFPL license, but is now
+distributed under the terms of the MIT license, by permission of the original
+author. See the ``LICENSE.txt`` file.
