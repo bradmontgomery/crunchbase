@@ -1,98 +1,14 @@
-import requests
-try:
-    import json
-except ImportError:
-    import simplejson as json
-
+from .endpoint import Endpoint
 from .settings import CRUNCHBASE_API_URL, CRUNCHBASE_API_KEY
 
-class crunchbase:
 
-    def __init__(self):
-        return None
+class CrunchBase(object):
 
-    def __webRequest(self, url):
-        try:
-            params =  {"api_key": CRUNCHBASE_API_KEY}
-            response = requests.get(url, params=params)
-            if response.status_code != 200:
-                raise CrunchBaseError("Content Unavailable")
-            return response.content
-        except requests.RequestException as e:
-            raise CrunchBaseError(e)
+    def __init__(self, *args, **kwargs):
+        self.endpoint = Endpoint(url=CRUNCHBASE_API_URL, extension='.js')
+        self.params = {"api_key": CRUNCHBASE_API_KEY}
 
-    def __getJsonData(self, namespace, query=""):
-        url = CRUNCHBASE_API_URL + namespace + query + ".js"
-        response_dict = json.loads(self.__webRequest(url))
-        return CrunchBaseResponse(**response_dict)
-
-    def getCompanyData(self, name):
-        """This returns the data about a company in JSON format."""
-
-        result = self.__getJsonData("company", "/%s" % name)
-        return result
-
-    def getPersonData(self, *args):
-        """This returns the data about a person in JSON format."""
-
-        result = self.__getJsonData("person", "/%s" % '-'.join(args).lower().replace(' ','-'))
-        return result
-
-    def getFinancialOrgData(self, orgName):
-        """This returns the data about a financial organization in JSON format."""
-
-        result = self.__getJsonData("financial-organization", "/%s" % orgName)
-        return result
-
-    def getProductData(self, name):
-        """This returns the data about a product in JSON format."""
-
-        result = self.__getJsonData("product", name)
-        return result
-
-    def getServiceProviderData(self, name):
-        """This returns the data about a service provider in JSON format."""
-
-        result = self.__getJsonData("service-provider", "/%s" % name)
-        return result
-
-    def listCompanies(self):
-        """This returns the list of companies in JSON format."""
-
-        result = self.__getJsonData("companies")
-        return result
-
-    def listPeople(self):
-        """This returns the list of people in JSON format."""
-
-        result = self.__getJsonData("people")
-        return result
-
-    def listFinancialOrgs(self):
-        """This returns the list of financial organizations in JSON format."""
-
-        result = self.__getJsonData("financial-organizations")
-        return result
-
-    def listProducts(self):
-        """This returns the list of products in JSON format."""
-
-        result = self.__getJsonData("products")
-        return result
-
-    def listServiceProviders(self):
-        """This returns the list of service providers in JSON format."""
-
-        result = self.__getJsonData("service-providers")
-        return result
-
-class CrunchBaseResponse(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def __repr__(self):
-        return '%s(%r)' % (self.__class__.__name__, self.__dict__)
-
-class CrunchBaseError(Exception):
-    pass
-
+    def __call__(self, path, params=None):
+        if params:
+            self.params.update(params)
+        return self.endpoint(path, params=self.params)
