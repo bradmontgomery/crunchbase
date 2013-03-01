@@ -1,5 +1,4 @@
-import urllib2
-import urllib
+import requests
 try:
     import json
 except ImportError:
@@ -14,10 +13,12 @@ class crunchbase:
 
     def __webRequest(self, url):
         try:
-            response = urllib2.urlopen(url)
-            result = response.read()
-            return result
-        except urllib2.HTTPError as e:
+            params =  {"api_key": CRUNCHBASE_API_KEY}
+            response = requests.get(url, params=params)
+            if response.status_code != 200:
+                raise CrunchBaseError("Content Unavailable")
+            return response.content
+        except requests.RequestException as e:
             raise CrunchBaseError(e)
 
     def __getJsonData(self, namespace, query=""):
