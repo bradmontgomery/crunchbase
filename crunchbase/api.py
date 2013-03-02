@@ -10,12 +10,13 @@ class ImproperlyConfigured(Exception):
 class CrunchBase(object):
 
     def __init__(self, *args, **kwargs):
-        self.endpoint = Endpoint(url=CRUNCHBASE_API_URL, extension='.js')
-        if CRUNCHBASE_API_KEY is None:
+        api_key = kwargs.get('api_key', CRUNCHBASE_API_KEY)
+        if api_key is None:
             raise ImproperlyConfigured(
                 "You must set a CRUNCHBASE_API_KEY before you can use the API"
             )
-        self.params = {"api_key": CRUNCHBASE_API_KEY}
+        self.params = {"api_key": api_key}
+        self.endpoint = Endpoint(url=CRUNCHBASE_API_URL, extension='.js')
 
     def __call__(self, path, params=None):
         if params:
