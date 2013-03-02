@@ -23,6 +23,15 @@ This Library requires the following:
 * json (included in Python 2.6+) or `simplejson <http://pypi.python.org/pypi/simplejson/>`_
 
 
+Installation
+------------
+
+Either clone this repo, and place it somewhere on your PYTHONPATH, or use pip
+to install directly from this repo::
+
+    pip install git+git://github.com/bradmontgomery/crunchbase.git@refactor#egg=crunchbase
+
+
 API Documentation
 -----------------
 
