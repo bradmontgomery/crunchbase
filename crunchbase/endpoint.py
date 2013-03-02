@@ -73,7 +73,10 @@ class Endpoint(object):
         """Send the http request and return a python dict."""
         resp = requests.get(uri, params=params)
         if resp.status_code == 200:
-            return resp.json()  # Requests' built-in json decoder!
+            if callable(resp.json):
+                return resp.json()  # Requests > 1.0
+            else:
+                return resp.json  # Requests < 1.0
         else:
             raise EndpointUnavailable("No response from {0}".format(uri))
 
