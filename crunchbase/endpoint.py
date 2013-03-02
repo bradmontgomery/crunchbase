@@ -25,11 +25,6 @@ Usage:
     httpbin.api('ip') -> returns cached data dict
 
 """
-try:
-    import json
-    assert json  # placate pyflakes
-except ImportError:
-    import simplejson as json
 import requests
 
 
@@ -78,7 +73,7 @@ class Endpoint(object):
         """Send the http request and return a python dict."""
         resp = requests.get(uri, params=params)
         if resp.status_code == 200:
-            return json.loads(resp.content)
+            return resp.json()  # Requests' built-in json decoder!
         else:
             raise EndpointUnavailable("No response from {0}".format(uri))
 
