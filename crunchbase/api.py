@@ -2,10 +2,19 @@ from .endpoint import Endpoint
 from .settings import CRUNCHBASE_API_URL, CRUNCHBASE_API_KEY
 
 
+class ImproperlyConfigured(Exception):
+    """Raised when using the CrunchBase class without an api key."""
+    pass
+
+
 class CrunchBase(object):
 
     def __init__(self, *args, **kwargs):
         self.endpoint = Endpoint(url=CRUNCHBASE_API_URL, extension='.js')
+        if CRUNCHBASE_API_KEY is None:
+            raise ImproperlyConfigured(
+                "You must set a CRUNCHBASE_API_KEY before you can use the API"
+            )
         self.params = {"api_key": CRUNCHBASE_API_KEY}
 
     def __call__(self, path, params=None):
